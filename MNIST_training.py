@@ -6,8 +6,26 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
+import time
 
+class InferenceLatencyUtil:
+    def __init__(self):
+        self.savedTime = time.time()
+        self.enabled = False
 
+    def time_flag1(self):
+        self.savedTime = time.time()
+        return self.savedTime   
+    
+    def time_flag2(self, text):
+        now = time.time()
+        deltaTime = now - self.savedTime
+        self.savedTime = now
+        if (text is not None) and self.enabled:
+            print("{} {:.20f}".format(text, deltaTime))
+        return deltaTime
+    
+inference_latency_util = InferenceLatencyUtil()
 
 class Net(nn.Module):
     def __init__(self):
@@ -23,18 +41,24 @@ class Net(nn.Module):
         self.relu = torch.nn.ReLU()
 
     def forward(self, x):
-
+        inference_latency_util.time_flag1()
         x = self.conv1(x)
+        inference_latency_util.time_flag2("Latency of conv1: ")
         x = self.relu(x)
         x = self.max_pool2d(x)
+        inference_latency_util.time_flag1()
         x = self.conv2(x)
+        inference_latency_util.time_flag2("Latency of conv2: ")
         x = self.relu(x)
         x = self.max_pool2d(x)
         x = x.reshape(x.size(0),-1)
+        inference_latency_util.time_flag1()
         x = self.fc1(x)
+        inference_latency_util.time_flag2("Latency of fc1: ")
         x = self.relu(x)
+        inference_latency_util.time_flag1()
         x = self.fc2(x)
-
+        inference_latency_util.time_flag2("Latency of fc2: ")
         return F.log_softmax(x)
 
 def train(args, model, device, train_loader, optimizer, epoch):
@@ -118,7 +142,11 @@ def main():
     # train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     # test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-
+    # model = Net().to(device)
+    # input_data = torch.randn(1, 1, 28, 28)
+    # inference_latency_util.enabled = True
+    # model(input_data)
+    # return
 
     model = Net().to(device)
     optimizer = optim.SGD(model.parameters(), lr=args.lr)
