@@ -109,15 +109,15 @@ if __name__ == '__main__':
         total_test_acc.append(test_acc_avg)
 
     # plot loss curve
-    # plt.figure()
-    # plt.plot(range(len(total_train_loss)), total_train_loss)
-    # plt.ylabel('training loss')
-    # plt.savefig('./save/fed_{}_{}_C{}_iid{}.png'.format(args.dataset, args.epochs, args.frac, args.iid))
-
     plt.figure()
-    plt.plot(range(len(total_test_acc)), total_test_acc)
-    plt.ylabel('testing accuracy')
+    plt.plot(range(len(total_train_loss)), total_train_loss)
+    plt.ylabel('training loss')
     plt.savefig('./save/fed_{}_{}_C{}_iid{}.png'.format(args.dataset, args.epochs, args.frac, args.iid))
+
+    # plt.figure()
+    # plt.plot(range(len(total_test_acc)), total_test_acc)
+    # plt.ylabel('testing accuracy')
+    # plt.savefig('./save/fed_{}_{}_C{}_iid{}.png'.format(args.dataset, args.epochs, args.frac, args.iid))
 
     # testing
     # net_glob.eval()

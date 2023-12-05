@@ -143,11 +143,12 @@ def main():
     # test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
     # model = Net().to(device)
-    # input_data = torch.randn(1, 1, 28, 28)
+    # input_data = torch.randn(64, 1, 28, 28)
     # inference_latency_util.enabled = True
     # model(input_data)
     # return
 
+    inference_latency_util.enabled = True
     model = Net().to(device)
     optimizer = optim.SGD(model.parameters(), lr=args.lr)
 
